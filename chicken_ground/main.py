@@ -4,6 +4,7 @@ from player import Player
 from egg import Egg
 
 level = 0
+score = 0
 my_player = Player(player_image, SCREEN_WIDTH / 2, SCREEN_HEIGHT)
 egg_group = pygame.sprite.Group()
 target_egg_type = random.randint(0,3)
@@ -30,17 +31,31 @@ start_new_level()
 
 
 def draw():
-    # TODO  نمایش دادن تصویر تخم مرغ تارگت
-    # TODO  نمایش دادن امتیاز
+    screen.blit(target_egg_image, target_egg_rect)
+    pygame.draw.rect(screen, (190, 10, 210), (0, 100, SCREEN_WIDTH, SCREEN_HEIGHT-200), 5)
+    
 
 def choose_new_target():
-    pass
+    global target_egg_image, target_egg_type
+    new_target = random.choice(egg_group.sprites())
+    target_egg_image = new_target.image
+    target_egg_type = new_target.type
 
 
-
-
-
-
+def check_colision():
+    global score
+    collided_egg = pygame.sprite.spritecollideany(my_player, egg_group)
+    if collided_egg:
+        if collided_egg.type == target_egg_type:
+            collided_egg.remove(egg_group)
+            score += 1
+            if len(egg_group) != 0:
+                choose_new_target()
+            else:
+                start_new_level()
+        else:
+            my_player.reset()
+            
 
 running = True
 while running:
@@ -49,6 +64,9 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
     screen.fill((0, 0, 0))
+    draw()
+    check_colision()
+    my_player.move()
     my_player.draw()
     egg_group.update()
     egg_group.draw(screen)
