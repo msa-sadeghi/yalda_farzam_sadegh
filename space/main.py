@@ -26,11 +26,8 @@ def check_edge_collisions():
         for chick in chick_group:
             chick.direction *= -1
             chick.rect.y += level * 10
-        
-
-
 running = True
-while running:
+while running: 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
