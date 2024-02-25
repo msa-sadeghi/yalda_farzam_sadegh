@@ -17,24 +17,46 @@ class Player(Sprite):
         self.update_animation_time = pygame.time.get_ticks()
         self.moving_status = False
         self.speed = 5
+        self.direction = 1
+        self.yspeed = 0
         
-    def update(self):
-        self.move()
+    def update(self, tile_map):
+        self.move(tile_map)
         self.animation()
         screen.blit(self.image, self.rect)
         
-    def move(self):
+    def move(self, tile_map):
         dx = 0
         dy = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
+            self.direction = 1
             self.moving_status = True
             dx += self.speed
         if keys[pygame.K_LEFT]:
+            self.direction = -1
             self.moving_status = True
             dx -= self.speed
         if not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
             self.moving_status = False
+        if keys[pygame.K_SPACE]:
+            self.yspeed = -15
+            
+        dy += self.yspeed    
+        self.yspeed += 1  
+        
+        for tile in tile_map:
+            if tile[1].colliderect(self.rect.x , self.rect.y + dy, self.image.get_width(), self.image.get_height()):
+                if self.yspeed >0:
+                    self.yspeed = 0
+                    dy = tile[1].top - self.rect.bottom
+                elif self.yspeed <0:
+                    dy = tile[1].bottom - self.rect.top
+                    self.yspeed = 0
+        
+         
+        self.rect.x += dx
+        self.rect.y += dy
             
     def animation(self):
         if pygame.time.get_ticks() - self.update_animation_time > 200:
@@ -43,8 +65,11 @@ class Player(Sprite):
                 self.frame_index = 0
             self.update_animation_time = pygame.time.get_ticks()
         if not self.moving_status:
-            self.image = self.right_images[0]
-        else:
+            self.frame_index = 0
+        if self.direction == 1:
             self.image = self.right_images[self.frame_index]
+        elif self.direction == -1:
+            self.image = self.left_images[self.frame_index]
+            
             
         

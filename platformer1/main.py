@@ -14,7 +14,7 @@ while running:
             running = False
             
     screen.fill((23,123,98))
-    player.update()
+    player.update(game_world.tile_map)
     game_world.draw()
     pygame.display.update()
     clock.tick(FPS)
