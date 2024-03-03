@@ -19,15 +19,21 @@ class Player(Sprite):
         self.speed = 5
         self.direction = 1
         self.yspeed = 0
+        self.alive = True
+        self.ghost_image = pygame.image.load("assets/ghost.png")
         
-    def update(self, tile_map):
-        self.move(tile_map)
-        self.animation()
+    def update(self, tile_map, enemy_group):
+        if self.alive:
+            self.move(tile_map, enemy_group)
+            self.animation()
+        else:
+            self.image = self.ghost_image          
+            
         screen.blit(self.image, self.rect)
         
-    def move(self, tile_map):
+    def move(self, tile_map, enemy_group):
         dx = 0
-        dy = 0
+        dy = 0        
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
             self.direction = 1
@@ -46,6 +52,8 @@ class Player(Sprite):
         self.yspeed += 1  
         
         for tile in tile_map:
+            if tile[1].colliderect(self.rect.x + dx , self.rect.y, self.image.get_width(), self.image.get_height()):
+                dx = 0                
             if tile[1].colliderect(self.rect.x , self.rect.y + dy, self.image.get_width(), self.image.get_height()):
                 if self.yspeed >0:
                     self.yspeed = 0
@@ -53,7 +61,9 @@ class Player(Sprite):
                 elif self.yspeed <0:
                     dy = tile[1].bottom - self.rect.top
                     self.yspeed = 0
-        
+        if pygame.sprite.spritecollide(self, enemy_group, True):
+            self.alive = False
+            
          
         self.rect.x += dx
         self.rect.y += dy
