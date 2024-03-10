@@ -1,9 +1,11 @@
 from constants import *
 from enemy import Enemy
+from door import Door
 class World:
-    def __init__(self, world_data, enemy_group):
+    def __init__(self, world_data, enemy_group, door_group):
         self.tile_map = []
         self.enemy_group = enemy_group
+        self.door_group = door_group
         for i in range(ROWS):
             for j in range(COLS):
                 if world_data[i][j] == 1:
@@ -16,6 +18,8 @@ class World:
                     self.tile_map.append((img, rect))
                 if world_data[i][j] == 3:
                     Enemy(j * 32, i * 32, self.enemy_group)
+                if world_data[i][j] == 6:
+                    Door(j * 32, i * 32, self.door_group)
                     
                     
     def draw(self):
