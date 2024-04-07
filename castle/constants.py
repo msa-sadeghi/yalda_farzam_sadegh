@@ -16,3 +16,21 @@ bg_image = pygame.image.load("assets/bg.png")
 bullet_image = pygame.image.load("assets/bullet.png")
 crosshair_image = pygame.image.load("assets/crosshair.png")
 repair_image = pygame.image.load("assets/repair.png")
+
+all_animation_images = []
+all_enemy_types = ("knight", "goblin", "purple_goblin", "red_goblin")
+all_enemy_healths = (50, 75, 100, 125)
+all_animations = ("walk", "attack", "death")
+
+for enemy in all_enemy_types:
+    enemy_list = []
+    for anime in all_animations:
+        anime_list = []
+        for i in range(20):
+            im = pygame.image.load(f"assets/enemies/{enemy}/{anime}/{i}.png")
+            im_w = im.get_width()
+            im_h = im.get_height()
+            im = pygame.transform.scale(im, (im_w * 0.2, im_h * 0.2))
+            anime_list.append(im)
+        enemy_list.append(anime_list)
+    all_animation_images.append(enemy_list)
