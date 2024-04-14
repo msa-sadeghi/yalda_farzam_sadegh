@@ -15,6 +15,8 @@ class Castle:
         self.rect = self.image.get_rect(topleft = (x,y))
         self.health = 1000
         self.max_health = 1000
+        self.fired = False
+        self.money = 0
         
     def draw(self,screen):
         if self.health <= 250:
@@ -30,8 +32,11 @@ class Castle:
         y_d = -(mouse_pos[1] - self.rect.midleft[1])
         x_d = mouse_pos[0] - self.rect.midleft[0]
         angle = math.atan2(y_d, x_d)
-        if pygame.mouse.get_pressed()[0]:
+        if pygame.mouse.get_pressed()[0] and not self.fired:
+            self.fired = True
             b =Bullet(self.rect.midleft[0], self.rect.midleft[1], angle)
             bullet_group.add(b)
+        if not pygame.mouse.get_pressed()[0]:
+            self.fired = False
         
         

@@ -15,16 +15,25 @@ class Enemy(Sprite):
         self.last_attack_time = pygame.time.get_ticks()
         
         
-    def update(self, castle):
-        if self.action == 1:
-            if pygame.time.get_ticks() - self.last_attack_time > 2000:
-                castle.health -= 50
-                self.last_attack_time = pygame.time.get_ticks()
+    def update(self, castle, bullet_group):
+        if self.alive:
+            if pygame.sprite.spritecollide(self, bullet_group, True):
+                self.health -= 25
+            if self.health <= 0:
+                castle.money += 100
+                self.change_action(2)
+                self.alive = False
+            if self.action == 1:
+                if pygame.time.get_ticks() - self.last_attack_time > 2000:
+                    castle.health -= 50
+                    self.last_attack_time = pygame.time.get_ticks()
+                
+            if self.action == 0:
+                self.rect.x += self.speed
+            if self.rect.right >= castle.rect.left:
+                self.change_action(1)
             
-        if self.action == 0:
-            self.rect.x += self.speed
-        if self.rect.right >= castle.rect.left:
-            self.change_action(1)
+            
         self.animation()
         
     def animation(self):
@@ -33,7 +42,10 @@ class Enemy(Sprite):
             self.last_update_time = pygame.time.get_ticks()
             self.frame_index += 1
             if self.frame_index >= len(self.all_images[self.action]):
-                self.frame_index = 0
+                if self.action == 2:
+                    self.frame_index = len(self.all_images[self.action]) - 1
+                else:
+                    self.frame_index = 0
                 
     def change_action(self, new_action):
         if self.action != new_action:

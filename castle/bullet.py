@@ -4,7 +4,7 @@ import math
 class Bullet(Sprite):
     def __init__(self, x,y,deg):
         super().__init__()
-        self.image = bullet_image
+        self.image = pygame.transform.scale(bullet_image,(32,32))
         self.rect = self.image.get_rect(topleft=(x,y))
         self.deg = deg
     def update(self):
